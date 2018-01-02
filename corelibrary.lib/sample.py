@@ -1,4 +1,5 @@
-"""core library sample"""
+"""core library sample
+for pyRevitSpencer"""
 
 __title__ = 'Hello\nWorld'
 __author__ = 'Michael Spencer Quinto'
