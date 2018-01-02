@@ -1,0 +1,31 @@
+﻿{
+"extensions":
+    [
+        {
+        "builtin": "False",
+        "enable": "True",
+        "type": "extension",
+        "name": "spencerCore",
+        "description": "My Collection of Tools for Interoperability between Work and Home",
+        "author": "Michael Spencer Quinto",
+        "author-url": "https://github.com/SpencerMAQ",
+        "url": "https://github.com/SpencerMAQ/pyRevitSpencer.git",
+        "website": "https://github.com/SpencerMAQ",
+        "image" : "",
+        "dependencies": []
+        },
+        {
+        "builtin": "False",
+        "enable": "True",
+        "type": "lib",
+        "name": "corelibrary",
+        "description": "Core Library for pyRevitSpencer",
+        "author": "Michael Spencer Quinto",
+        "author-url": "https://github.com/SpencerMAQ",
+        "url": "https://github.com/SpencerMAQ/pyRevitSpencer.git",
+        "website": "https://github.com/SpencerMAQ",
+        "image" : "",
+        "dependencies": []
+        }
+    ]
+}
