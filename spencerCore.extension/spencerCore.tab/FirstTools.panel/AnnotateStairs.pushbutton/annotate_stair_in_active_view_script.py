@@ -3,8 +3,9 @@ https://github.com/eirannejad/pyRevit/issues/250"""
 
 # tested versions: 2018
 
-__title__ = 'StairPath\nAllView'
-__author__ = 'Michael Spencer Quinto'
+__title__   = 'StairPath\nAllView'
+__author__  = 'Michael Spencer Quinto'
+__version__ = 0.0
 
 
 import clr
@@ -41,21 +42,23 @@ if __name__ == '__main__':
                                     .OfClass(clr.GetClrType(Stairs))            \
                                     .ToElements()
 
+            # says that plan_view.Id is sometimes invalid
             except ArgumentException:
-                pass
+                continue
 
 
-            if plan_view.ViewType == ViewType.FloorPlan:
-                for stair in stair_collector:
+            # if plan_view.ViewType == ViewType.FloorPlan:
+            for stair in stair_collector:
 
-                    try:
-                        StairsPath.Create(doc,
-                                          LinkElementId(stair.Id),
-                                          default_path_type_id,
-                                          plan_view.Id
-                                          )
+                try:
+                    StairsPath.Create(doc,
+                                      LinkElementId(stair.Id),
+                                      default_path_type_id,
+                                      plan_view.Id
+                                      )
 
-                    except ArgumentException:
-                        pass
+                # says that plan_view.Id is sometimes invalid
+                except ArgumentException:
+                    pass
 
         t.Commit()
