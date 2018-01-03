@@ -1,4 +1,5 @@
-"""An attempt to solve this problem
+"""Places Annotation Stair Paths for all visible views
+as an attempt to solve this problem:
 https://github.com/eirannejad/pyRevit/issues/250"""
 
 # tested versions: 2018
