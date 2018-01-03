@@ -27,39 +27,35 @@ view_collector          = FilteredElementCollector(doc)                 \
                             .OfClass(clr.GetClrType(ViewPlan))          \
                             .ToElements()
 
-# NOTE: silly me, I didn't realize OwnerViewId is only for elements appearing
-# in only one view
 
-# try this instead http://thebuildingcoder.typepad.com/blog/2017/05/retrieving-elements-visible-in-view.html
+# try: http://thebuildingcoder.typepad.com/blog/2017/05/retrieving-elements-visible-in-view.html
 if __name__ == '__main__':
     with Transaction(doc, 'pyRevit Annotate StairPath for All Active') as t:
         t.Start()
 
         for plan_view in view_collector:
 
-            # collect all stairs inside plan_view
-            try:
+            # view_collector also catches ViewPlan templates causing errors
+            if not plan_view.IsTemplate:
+
+                # collect all stairs inside plan_view
                 stair_collector = FilteredElementCollector(doc, plan_view.Id)   \
                                     .OfClass(clr.GetClrType(Stairs))            \
                                     .ToElements()
 
-            # says that plan_view.Id is sometimes invalid
-            except ArgumentException:
-                continue
+                if plan_view.ViewType == ViewType.FloorPlan:
+                    for stair in stair_collector:
 
+                        try:
+                            StairsPath.Create(doc,
+                                              LinkElementId(stair.Id),
+                                              default_path_type_id,
+                                              plan_view.Id
+                                              )
 
-            # if plan_view.ViewType == ViewType.FloorPlan:
-            for stair in stair_collector:
-
-                try:
-                    StairsPath.Create(doc,
-                                      LinkElementId(stair.Id),
-                                      default_path_type_id,
-                                      plan_view.Id
-                                      )
-
-                # says that plan_view.Id is sometimes invalid
-                except ArgumentException:
-                    pass
+                        # says that plan_view.Id is sometimes invalid
+                        except ArgumentException:
+                            pass
+                            # raise
 
         t.Commit()
