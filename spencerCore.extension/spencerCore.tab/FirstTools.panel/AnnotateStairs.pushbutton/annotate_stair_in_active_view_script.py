@@ -27,6 +27,8 @@ view_collector          = FilteredElementCollector(doc)                 \
                             .OfClass(clr.GetClrType(ViewPlan))          \
                             .ToElements()
 
+# TODO: note to self: you might want to do a try-except instead since apparently OwnerView methods don't work?
+    
 if __name__ == '__main__':
     with Transaction(doc, 'pyRevit Annotate StairPath for All Active') as t:
         t.Start()
