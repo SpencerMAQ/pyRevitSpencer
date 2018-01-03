@@ -13,8 +13,7 @@ from revitutils import doc, uidoc
 
 from Autodesk.Revit.DB import Transaction, FilteredElementCollector, LinkElementId, View, ViewPlan, ViewType
 from Autodesk.Revit.DB.Architecture import StairsPath, Stairs, StairsPathType
-
-
+from Autodesk.Revit.Exceptions import ArgumentException
 
 
 default_path_type_id    = FilteredElementCollector(doc)                 \
@@ -22,40 +21,41 @@ default_path_type_id    = FilteredElementCollector(doc)                 \
                             .ToElementIds()[0]
                             # .FirstElementId()
 
-# TODO: filter only to plan views using FilteredElementCollector
 view_collector          = FilteredElementCollector(doc)                 \
                             .OfClass(clr.GetClrType(ViewPlan))          \
                             .ToElements()
 
-# TODO: note to self: you might want to do a try-except instead since apparently OwnerView methods don't work?
-    
+# NOTE: silly me, I didn't realize OwnerViewId is only for elements appearing
+# in only one view
+
+# try this instead http://thebuildingcoder.typepad.com/blog/2017/05/retrieving-elements-visible-in-view.html
 if __name__ == '__main__':
     with Transaction(doc, 'pyRevit Annotate StairPath for All Active') as t:
         t.Start()
 
         for plan_view in view_collector:
-            # Note: .OwnedByView(plan_view.Id) gives null results
-            # THE HELL is there a problem with OWNERVIEWID???
-            stair_collector = FilteredElementCollector(doc)             \
-                                .OfClass(clr.GetClrType(Stairs)) \
-                                .ToElements()
-            # print(stair_collector)
-            # if stair_collector:
-            #     print('hoola')
+
+            # collect all stairs inside plan_view
+            try:
+                stair_collector = FilteredElementCollector(doc, plan_view.Id)   \
+                                    .OfClass(clr.GetClrType(Stairs))            \
+                                    .ToElements()
+
+            except ArgumentException:
+                pass
 
 
-            # if plan_view.ViewType == ViewType.FloorPlan:
-            for stair in stair_collector:
+            if plan_view.ViewType == ViewType.FloorPlan:
+                for stair in stair_collector:
 
-                # apparently stair.OwnerViewId returns an invalid elemId
-                print(stair.Id.ToString(), stair.OwnerViewId.ToString(), plan_view.Id.ToString())
-                # test
-                if stair.OwnerViewId == plan_view.Id:
+                    try:
+                        StairsPath.Create(doc,
+                                          LinkElementId(stair.Id),
+                                          default_path_type_id,
+                                          plan_view.Id
+                                          )
 
-                    StairsPath.Create(doc,
-                                      LinkElementId(stair.Id),
-                                      default_path_type_id,
-                                      plan_view.Id
-                                      )
+                    except ArgumentException:
+                        pass
 
         t.Commit()
