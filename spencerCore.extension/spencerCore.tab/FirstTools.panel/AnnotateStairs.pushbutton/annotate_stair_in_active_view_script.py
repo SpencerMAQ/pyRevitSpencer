@@ -1,4 +1,4 @@
-# pyRevitSpencer: A pyRevit Plugin (GPL)
+# pyRevitSpencer: A pyRevit Extension (GPL)
 # started by Michael Spencer Quinto <https://github.com/SpencerMAQ>
 #
 # This file is part of pyRevitSpencer.
